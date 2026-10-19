@@ -1,7 +1,6 @@
 const num1Input = document.getElementById('num1');
 const num2Input = document.getElementById('num2');
 const operationSelect = document.getElementById('operation');
-const calculateBtn = document.getElementById('calculateBtn');
 const resultBox = document.getElementById('result');
 
 const operations = {
@@ -17,23 +16,55 @@ const operations = {
     power: (a, b) => Math.pow(a, b)
 };
 
-calculateBtn.addEventListener('click', () => {
-    const num1 = parseFloat(num1Input.value);
-    const num2 = parseFloat(num2Input.value);
-    const operation = operationSelect.value;
+function showResult(message, type = 'info') {
+    const classes = {
+        info: 'mt-4 alert alert-info',
+        error: 'mt-4 alert alert-danger',
+        empty: 'mt-4 alert alert-secondary'
+    };
+    resultBox.className = classes[type] || classes.info;
+    resultBox.textContent = message;
+}
 
-    if (isNaN(num1) || isNaN(num2)) {
-        resultBox.className = 'mt-4 alert alert-danger';
-        resultBox.textContent = 'Пожалуйста, введите оба числа';
+function setFieldError(input, hasError) {
+    input.classList.toggle('is-invalid', hasError);
+}
+
+function readNumber(input) {
+    const raw = input.value.trim();
+    if (raw === '') {
+        return { value: NaN, valid: false, empty: true };
+    }
+    const value = parseFloat(raw);
+    return { value, valid: !isNaN(value), empty: false };
+}
+
+function calculate() {
+    const n1 = readNumber(num1Input);
+    const n2 = readNumber(num2Input);
+
+    setFieldError(num1Input, !n1.valid && !n1.empty);
+    setFieldError(num2Input, !n2.valid && !n2.empty);
+
+    if (n1.empty || n2.empty) {
+        showResult('Введите оба числа', 'empty');
+        return;
+    }
+
+    if (!n1.valid || !n2.valid) {
+        showResult('Введите корректные числа', 'error');
         return;
     }
 
     try {
-        const result = operations[operation](num1, num2);
-        resultBox.className = 'mt-4 alert alert-info';
-        resultBox.textContent = `Результат: ${result}`;
+        const operation = operationSelect.value;
+        const result = operations[operation](n1.value, n2.value);
+        showResult(`Результат: ${result}`, 'info');
     } catch (error) {
-        resultBox.className = 'mt-4 alert alert-danger';
-        resultBox.textContent = error.message;
+        showResult(error.message, 'error');
     }
-});
+}
+
+num1Input.addEventListener('input', calculate);
+num2Input.addEventListener('input', calculate);
+operationSelect.addEventListener('change', calculate);

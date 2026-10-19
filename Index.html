@@ -13,11 +13,13 @@
         <div class="mb-3">
             <label for="num1" class="form-label">Первое число</label>
             <input type="number" step="any" class="form-control" id="num1" placeholder="Введите число">
+            <div class="invalid-feedback" id="num1Error">Введите корректное число</div>
         </div>
 
         <div class="mb-3">
             <label for="num2" class="form-label">Второе число</label>
             <input type="number" step="any" class="form-control" id="num2" placeholder="Введите число">
+            <div class="invalid-feedback" id="num2Error">Введите корректное число</div>
         </div>
 
         <div class="mb-3">
@@ -31,10 +33,8 @@
             </select>
         </div>
 
-        <button id="calculateBtn" class="btn btn-primary w-100">Вычислить</button>
-
-        <div class="mt-4 alert alert-info" id="result" role="alert">
-            Результат появится здесь
+        <div class="mt-4 alert alert-secondary" id="result" role="alert">
+            Введите оба числа
         </div>
     </div>
 
